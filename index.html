@@ -6,6 +6,10 @@
 </head>
 <body>
     <button id="insertButton">Insert Data</button>
+    <!-- Added textarea for inputting SQL queries -->
+    <textarea id="sqlQuery" rows="4" cols="50" placeholder="Enter SQL query here..."></textarea>
+    <!-- Added button for submitting SQL queries -->
+    <button id="submitQuery">Submit Query</button>
     <div id="response"></div>
 
     <script>
@@ -23,7 +27,7 @@
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('insertData').onclick = () => sendData(
+            document.getElementById('insertButton').onclick = () => sendData(
                 'INSERT INTO patients (name, dob) VALUES ' +
                 '("Sara Brown", "1901-01-01"), ' +
                 '("John Smith", "1941-01-01"), ' +
@@ -37,7 +41,6 @@
                 sendData(query, method);
             };
         });
-        </script>
-        
+    </script>        
 </body>
 </html>
