@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Side</title>
+</head>
+<body>
+    <button id="insertData">Insert Data</button>
+    <br><br>
+    <textarea id="sqlQuery" rows="4" cols="50"></textarea>
+    <button id="sendQuery">Send Query</button>
+    <script>
+        document.getElementById('insertData').addEventListener('click', function() {
+            fetch('http://server2-url/api/v1/sql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'query=INSERT INTO patients (name, age, address, phone_number) VALUES ("John Doe", 30, "123 Main St", "123-456-7890")'
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('sendQuery').addEventListener('click', function() {
+            const query = document.getElementById('sqlQuery').value;
+            const method = query.trim().toLowerCase().startsWith('select') ? 'GET' : 'POST';
+            const url = method === 'GET' ? 'http://server2-url/api/v1/sql?' + encodeURIComponent(query) : 'http://server2-url/api/v1/sql';
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: method === 'POST' ? 'query=' + encodeURIComponent(query) : null
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
