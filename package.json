@@ -12,6 +12,8 @@
   "dependencies": {
     "mysql": "^2.18.1",
     "mysql-promise": "^5.0.0",
+    "mysql2": "^3.11.3",
+    "mysql2-promise": "^0.1.4",
     "node": "^20.18.0"
   }
 }

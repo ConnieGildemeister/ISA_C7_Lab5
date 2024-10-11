@@ -2,44 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Side</title>
+    <title>Insert Data</title>
 </head>
 <body>
-    <button id="insertData">Insert Data</button>
-    <br><br>
-    <textarea id="sqlQuery" rows="4" cols="50"></textarea>
-    <button id="sendQuery">Send Query</button>
+    <button id="insertButton">Insert Data</button>
+    <div id="response"></div>
+
     <script>
-        document.getElementById('insertData').addEventListener('click', function() {
-            fetch('http://server2-url/api/v1/sql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'query=INSERT INTO patients (name, age, address, phone_number) VALUES ("John Doe", 30, "123 Main St", "123-456-7890")'
-            })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
-        });
-
-        document.getElementById('sendQuery').addEventListener('click', function() {
-            const query = document.getElementById('sqlQuery').value;
-            const method = query.trim().toLowerCase().startsWith('select') ? 'GET' : 'POST';
-            const url = method === 'GET' ? 'http://server2-url/api/v1/sql?' + encodeURIComponent(query) : 'http://server2-url/api/v1/sql';
-
-            fetch(url, {
+        function sendData(query, method) {
+            fetch('https://isa-c7-lab5-server2.onrender.com/api/v1/sql' + (method === 'GET' ? `?query=${encodeURIComponent(query)}` : ''), {
                 method: method,
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json'
                 },
-                body: method === 'POST' ? 'query=' + encodeURIComponent(query) : null
+                body: method === 'POST' ? JSON.stringify({ query }) : null
             })
             .then(response => response.json())
-            .then(data => console.log(data))
+            .then(data => document.getElementById('response').textContent = JSON.stringify(data, null, 2))
             .catch(error => console.error('Error:', error));
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('insertData').onclick = () => sendData(
+                'INSERT INTO patients (name, dob) VALUES ' +
+                '("Sara Brown", "1901-01-01"), ' +
+                '("John Smith", "1941-01-01"), ' +
+                '("Jack Ma", "1961-01-30"), ' +
+                '("Elon Musk", "1999-01-01")',
+                'POST'
+            );
+            document.getElementById('submitQuery').onclick = () => {
+                const query = document.getElementById('sqlQuery').value;
+                const method = query.trim().toLowerCase().startsWith('select') ? 'GET' : 'POST';
+                sendData(query, method);
+            };
         });
-    </script>
+        </script>
+        
 </body>
 </html>
